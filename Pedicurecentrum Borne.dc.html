@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700&family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="image-slot.js"></script>
+<style>
+body{margin:0;background:#FAF6EF;}
+a{color:#2E5E4E;}a:hover{color:#24493D;}
+button{font-family:inherit;}
+h1,h2,h3{font-family:'Outfit',sans-serif;letter-spacing:-0.01em;}
+input,textarea,select{font-family:inherit;font-size:18px;}
+*:focus-visible{outline:3px solid rgba(46,94,78,.5);outline-offset:2px;}
+@keyframes heroIn{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:none;}}
+</style>
+</helmet>
+<div style="min-height:100vh;background:#FAF6EF;color:#2B2B2B;font-family:'Public Sans',system-ui,sans-serif;font-size:16px;line-height:1.6;">
+<div style="max-width:{{ frameW }};margin:0 auto;background:#FAF6EF;position:relative;overflow:clip;">
+  <sc-if value="{{ isDesk }}" hint-placeholder-val="{{ true }}">
+    <header style="position:sticky;top:0;z-index:40;background:{{ hdrBg }};border-bottom:1px solid {{ hdrBd }};transition:background .25s ease,border-color .25s ease;">
+      <div style="max-width:1160px;margin:0 auto;padding:0 24px;height:68px;display:flex;align-items:center;gap:16px;">
+        <button onClick="{{ go.home }}" style="background:none;border:none;cursor:pointer;font-family:'Outfit',sans-serif;font-size:18px;font-weight:700;color:{{ hdrLogo }};padding:8px 0;white-space:nowrap;">Pedicurecentrum <span style="color:{{ hdrAcc }};">Borne</span></button>
+        <nav style="display:flex;gap:2px;flex:1;flex-wrap:wrap;justify-content:center;align-items:center;">
+          <div style="position:relative;">
+            <button onClick="{{ toggleDd }}" style="background:none;border:none;cursor:pointer;font-size:15px;padding:9px 12px;border-radius:999px;color:{{ ddC }};font-weight:{{ ddW }};display:flex;align-items:center;gap:6px;" style-hover="background:#F0EADC;">Behandelingen
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </button>
+            <sc-if value="{{ ddOpen }}" hint-placeholder-val="{{ false }}">
+              <div style="position:absolute;top:calc(100% + 8px);left:0;min-width:280px;background:#fff;border:1px solid #E9E2D3;border-radius:16px;box-shadow:0 12px 28px rgba(31,61,50,.14);padding:8px;z-index:60;display:flex;flex-direction:column;">
+                <sc-for list="{{ ddItems }}" as="d" hint-placeholder-count="6">
+                  <button onClick="{{ d.on }}" style="background:none;border:none;cursor:pointer;text-align:left;font-size:16px;padding:12px 14px;border-radius:10px;color:#2B2B2B;font-weight:{{ d.w }};padding-left:{{ d.pl }};" style-hover="background:#F5F1E7;">{{ d.label }}</button>
+                </sc-for>
+              </div>
+            </sc-if>
+          </div>
+          <sc-for list="{{ menuRest }}" as="m" hint-placeholder-count="3">
+            <button onClick="{{ m.on }}" style="background:none;border:none;cursor:pointer;font-size:15px;padding:9px 12px;border-radius:999px;color:{{ m.c }};font-weight:{{ m.w }};" style-hover="background:#F0EADC;">{{ m.label }}</button>
+          </sc-for>
+        </nav>
+        <a href="tel:+31742661234" style="font-weight:600;text-decoration:none;font-size:14px;white-space:nowrap;border:1px solid {{ hdrTelBd }};color:{{ hdrTel }};border-radius:999px;padding:9px 16px;" style-hover="background:{{ hdrHov }};color:{{ hdrTel }};">074 266 1234</a>
+        <button onClick="{{ go.afspraak }}" style="background:{{ hdrCtaBg }};color:{{ hdrCtaC }};border:none;border-radius:999px;padding:10px 20px;font-size:14px;font-weight:600;cursor:pointer;min-height:44px;white-space:nowrap;" style-hover="background:{{ hdrCtaHov }};">Afspraak maken</button>
+      </div>
+    </header>
+  </sc-if>
+  <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
+    <header style="position:sticky;top:0;z-index:40;background:{{ hdrBg }};border-bottom:1px solid {{ hdrBd }};transition:background .25s ease,border-color .25s ease;">
+      <div style="padding:0 16px;height:66px;display:flex;align-items:center;justify-content:space-between;gap:12px;">
+        <button onClick="{{ go.home }}" style="background:none;border:none;cursor:pointer;font-family:'Outfit',sans-serif;font-size:18px;font-weight:700;color:{{ hdrLogo }};padding:8px 0;text-align:left;">Pedicurecentrum <span style="color:{{ hdrAcc }};">Borne</span></button>
+        <button onClick="{{ toggleMenu }}" aria-label="Menu" style="background:none;border:1px solid {{ hdrTelBd }};border-radius:999px;cursor:pointer;width:48px;height:48px;display:flex;align-items:center;justify-content:center;color:{{ hdrLogo }};">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"></line><line x1="4" y1="12" x2="20" y2="12"></line><line x1="4" y1="17" x2="20" y2="17"></line></svg>
+        </button>
+      </div>
+      <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+        <nav style="background:#FAF6EF;border-bottom:1px solid #E9E2D3;padding:8px 16px 18px;display:flex;flex-direction:column;gap:2px;">
+          <sc-for list="{{ menu }}" as="m" hint-placeholder-count="5">
+            <button onClick="{{ m.on }}" style="background:none;border:none;cursor:pointer;text-align:left;font-size:19px;padding:13px 10px;border-radius:10px;color:{{ m.c }};font-weight:{{ m.w }};">{{ m.label }}</button>
+          </sc-for>
+          <button onClick="{{ go.afspraak }}" style="margin-top:10px;background:#2E5E4E;color:#fff;border:none;border-radius:999px;padding:14px;font-size:18px;font-weight:600;cursor:pointer;min-height:50px;">Afspraak maken</button>
+        </nav>
+      </sc-if>
+    </header>
+  </sc-if>
+  <main>
+
+    <sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+      <div data-screen-label="Home">
+        <section style="position:relative;background:#1F3D32;min-height:min(88vh,720px);display:flex;align-items:center;justify-content:center;margin-top:{{ heroMt }};">
+          <div style="position:absolute;inset:0;"><image-slot id="hero" shape="rect" fit="cover" placeholder="foto: behandelaar in praktijk (donker, sfeervol)"></image-slot></div>
+          <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(24,44,36,.78) 0%,rgba(24,44,36,.55) 45%,rgba(24,44,36,.82) 100%);pointer-events:none;"></div>
+          <div style="position:relative;z-index:2;text-align:center;padding:100px 24px 110px;max-width:820px;pointer-events:none;animation:heroIn .7s ease-out both;">
+            <p style="margin:0 0 18px;color:#D8C9A3;letter-spacing:.22em;text-transform:uppercase;font-size:12px;font-weight:700;">Cosmetische &amp; medische pedicure</p>
+            <h1 style="margin:0 0 22px;color:#fff;font-size:clamp(30px,4.6vw,52px);line-height:1.08;font-weight:700;text-wrap:balance;">Uw 🦶🦶 in goede 🙌</h1>
+            <p style="margin:0 auto 36px;color:rgba(255,255,255,.85);font-size:clamp(16px,1.6vw,18px);max-width:26em;">Pedicure in Borne — cosmetisch én medisch. Rustig, deskundig en dichtbij.</p>
+            <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;pointer-events:auto;">
+              <button onClick="{{ go.afspraak }}" style="background:#FAF6EF;color:#1F3D32;border:none;border-radius:999px;padding:13px 26px;font-size:15px;font-weight:700;cursor:pointer;min-height:48px;" style-hover="background:#fff;">Afspraak maken</button>
+              <a href="tel:+31742661234" style="display:inline-flex;align-items:center;gap:10px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.35);color:#fff;border-radius:999px;padding:13px 26px;font-size:15px;font-weight:600;text-decoration:none;min-height:48px;box-sizing:border-box;" style-hover="background:rgba(255,255,255,.2);color:#fff;">Bel 074 266 1234</a>
+            </div>
+          </div>
+        </section>
+
+        <div style="max-width:1160px;margin:0 auto;padding:0 24px;">
+          <section style="padding:72px 0 8px;">
+            <p style="margin:0 0 10px;color:#2E5E4E;letter-spacing:.18em;text-transform:uppercase;font-size:12px;font-weight:700;">Behandelingen</p>
+            <h2 style="margin:0 0 32px;font-size:clamp(22px,2.8vw,30px);color:#1F3D32;">Voor verzorging én voetzorg</h2>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:24px;">
+              <button onClick="{{ go.cosmetisch }}" style="text-align:left;background:#fff;border:1px solid #E9E2D3;border-radius:18px;padding:0;cursor:pointer;overflow:hidden;box-shadow:0 1px 2px rgba(31,61,50,.05);transition:box-shadow .15s ease,transform .15s ease;font-size:18px;" style-hover="transform:translateY(-3px);box-shadow:0 12px 28px rgba(31,61,50,.12);">
+                <div style="height:190px;"><image-slot id="card-cos" shape="rect" placeholder="foto: cosmetische behandeling"></image-slot></div>
+                <div style="padding:26px 28px 28px;display:flex;flex-direction:column;gap:10px;">
+                  <span style="font-family:'Outfit',sans-serif;font-size:19px;font-weight:700;color:#1F3D32;">Cosmetische pedicure</span>
+                  <span style="color:#55524B;">Verzorging en ontspanning voor gezonde voeten. Nagels knippen, eelt verwijderen, lakken of gelish.</span>
+                  <span style="color:#2E5E4E;font-weight:700;margin-top:6px;">Bekijk behandelingen →</span>
+                </div>
+              </button>
+              <button onClick="{{ go.medisch }}" style="text-align:left;background:#fff;border:1px solid #E9E2D3;border-radius:18px;padding:0;cursor:pointer;overflow:hidden;box-shadow:0 1px 2px rgba(31,61,50,.05);transition:box-shadow .15s ease,transform .15s ease;font-size:18px;" style-hover="transform:translateY(-3px);box-shadow:0 12px 28px rgba(31,61,50,.12);">
+                <div style="height:190px;"><image-slot id="card-med" shape="rect" placeholder="foto: medische voetzorg"></image-slot></div>
+                <div style="padding:26px 28px 28px;display:flex;flex-direction:column;gap:10px;">
+                  <span style="font-family:'Outfit',sans-serif;font-size:19px;font-weight:700;color:#1F3D32;">Medische pedicure</span>
+                  <span style="color:#55524B;">Voetzorg bij diabetes, reuma, ingegroeide nagels, likdoorns en kloven. Vaak vergoed via uw zorgverzekeraar.</span>
+                  <span style="color:#2E5E4E;font-weight:700;margin-top:6px;">Bekijk voetzorg →</span>
+                </div>
+              </button>
+            </div>
+          </section>
+
+          <section style="padding:56px 0 64px;">
+            <div style="background:#fff;border:1px solid #E9E2D3;border-radius:18px;padding:32px 28px;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:26px;">
+              <sc-for list="{{ usps }}" as="u" hint-placeholder-count="4">
+                <div style="display:flex;gap:14px;align-items:center;">
+                  <div style="flex-shrink:0;width:48px;height:48px;border-radius:14px;background:#EAF1ED;display:flex;align-items:center;justify-content:center;color:#2E5E4E;font-weight:700;font-size:16px;font-family:'Outfit',sans-serif;">{{ u.g }}</div>
+                  <p style="margin:0;font-size:17px;font-weight:600;color:#1F3D32;">{{ u.t }}</p>
+                </div>
+              </sc-for>
+            </div>
+          </section>
+        </div>
+
+        <section style="background:#fff;border-top:1px solid #E9E2D3;border-bottom:1px solid #E9E2D3;padding:72px 24px;">
+          <div style="max-width:1160px;margin:0 auto;">
+            <div style="display:flex;align-items:end;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-bottom:32px;">
+              <div>
+                <p style="margin:0 0 10px;color:#2E5E4E;letter-spacing:.18em;text-transform:uppercase;font-size:12px;font-weight:700;">Webshop</p>
+                <h2 style="margin:0;font-size:clamp(22px,2.8vw,30px);color:#1F3D32;">Voor thuis, uit de praktijk</h2>
+              </div>
+              <button onClick="{{ go.shop }}" style="background:#2E5E4E;color:#fff;border:none;border-radius:999px;padding:11px 22px;font-size:15px;font-weight:600;cursor:pointer;min-height:48px;" style-hover="background:#24493D;">Naar de webshop →</button>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;">
+              <sc-for list="{{ products }}" as="p" hint-placeholder-count="4">
+                <button onClick="{{ go.shop }}" style="text-align:left;background:#FAF6EF;border:1px solid #E9E2D3;border-radius:16px;padding:0;cursor:pointer;overflow:hidden;display:flex;flex-direction:column;transition:box-shadow .15s ease,transform .15s ease;" style-hover="transform:translateY(-3px);box-shadow:0 12px 28px rgba(31,61,50,.12);">
+                  <div style="height:130px;width:100%;"><image-slot id="{{ p.imgHome }}" shape="rect" placeholder="{{ p.ph }}"></image-slot></div>
+                  <div style="padding:16px 18px;display:flex;flex-direction:column;gap:4px;">
+                    <span style="font-family:'Outfit',sans-serif;font-size:17px;font-weight:700;color:#1F3D32;">{{ p.n }}</span>
+                    <span style="font-weight:700;color:#2E5E4E;">{{ p.prF }}</span>
+                  </div>
+                </button>
+              </sc-for>
+            </div>
+          </div>
+        </section>
+
+        <div style="max-width:1160px;margin:0 auto;padding:0 24px;">
+          <section style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:40px;align-items:center;padding:72px 0 8px;">
+            <div style="height:340px;"><image-slot id="kennismaking" placeholder="foto: Meike" radius="18"></image-slot></div>
+            <div>
+              <p style="margin:0 0 10px;color:#2E5E4E;letter-spacing:.18em;text-transform:uppercase;font-size:12px;font-weight:700;">Even kennismaken</p>
+              <h2 style="margin:0 0 14px;font-size:clamp(22px,2.8vw,30px);color:#1F3D32;">Rustig, persoonlijk en deskundig</h2>
+              <p style="margin:0 0 20px;color:#55524B;max-width:30em;">Meike is gediplomeerd medisch pedicure en werkt al jaren met voeten. In haar praktijk in Borne neemt ze de tijd voor elke cliënt.</p>
+              <button onClick="{{ go.over }}" style="background:none;border:1px solid #DCD4C2;border-radius:999px;padding:13px 24px;cursor:pointer;color:#1F3D32;font-size:17px;font-weight:600;min-height:48px;" style-hover="background:#F0EADC;">Meer over de praktijk →</button>
+            </div>
+          </section>
+
+          <section style="background:#fff;border:1px solid #E9E2D3;border-radius:18px;padding:32px;margin:56px 0 72px;display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:32px;align-items:center;">
+            <div style="height:240px;"><image-slot id="home-kaart" placeholder="kaart: Aanslagweg 16C, Borne" radius="14"></image-slot></div>
+            <div>
+              <h2 style="margin:0 0 14px;font-size:21px;color:#1F3D32;">Praktisch</h2>
+              <p style="margin:0 0 10px;">Aanslagweg 16C, Borne<br>ma t/m vr 8:30 – 17:00 · do tot 20:00 · za op afspraak</p>
+              <p style="margin:0;color:#55524B;">Ook voor cliënten uit Hertme, Zenderen, Bornerbroek en omgeving. Gratis parkeren voor de deur.</p>
+            </div>
+          </section>
+        </div>
+
+        <section style="background:#1F3D32;padding:80px 24px;">
+          <div style="max-width:1160px;margin:0 auto;">
+            <div style="display:flex;align-items:baseline;gap:18px;flex-wrap:wrap;margin-bottom:40px;">
+              <p style="margin:0;font-family:'Outfit',sans-serif;font-size:clamp(32px,4vw,44px);font-weight:700;color:#D8C9A3;line-height:1;">4,9 ★</p>
+              <h2 style="margin:0;font-size:clamp(20px,2.6vw,26px);color:#fff;">op Google</h2>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:28px;">
+              <sc-for list="{{ reviews }}" as="r" hint-placeholder-count="3">
+                <figure style="margin:0;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:16px;padding:26px;">
+                  <blockquote style="margin:0 0 14px;font-size:18px;color:#fff;line-height:1.55;">"{{ r.q }}"</blockquote>
+                  <figcaption style="color:#B9C7BE;font-size:16px;">— {{ r.n }}</figcaption>
+                </figure>
+              </sc-for>
+            </div>
+          </div>
+        </section>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isCos }}" hint-placeholder-val="{{ false }}">
+      <div data-screen-label="Cosmetische pedicure" style="max-width:1160px;margin:0 auto;padding:64px 24px;">
+        <p style="margin:0 0 10px;color:#2E5E4E;letter-spacing:.18em;text-transform:uppercase;font-size:12px;font-weight:700;">Verzorging &amp; ontspanning</p>
+        <h1 style="font-size:clamp(26px,3.6vw,38px);margin:0 0 14px;color:#1F3D32;">Cosmetische pedicure</h1>
+        <p style="max-width:34em;color:#55524B;margin:0 0 40px;font-size:19px;">Verzorgde voeten lopen prettiger. Een cosmetische behandeling houdt nagels en huid gezond en is bovendien een moment van ontspanning.</p>
+        <div style="display:flex;flex-direction:column;gap:20px;max-width:780px;">
+          <sc-for list="{{ cosTreats }}" as="t" hint-placeholder-count="3">
+            <div style="background:#fff;border:1px solid #E9E2D3;border-radius:18px;padding:30px;box-shadow:0 1px 2px rgba(31,61,50,.05);">
+              <div style="display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:baseline;">
+                <h2 style="margin:0;font-size:19px;color:#1F3D32;">{{ t.n }}</h2>
+                <span style="color:#2E5E4E;font-size:17px;font-weight:700;white-space:nowrap;">{{ t.m }}</span>
+              </div>
+              <p style="margin:10px 0 14px;color:#55524B;max-width:34em;">{{ t.d }}</p>
+              <ul style="margin:0 0 18px;padding-left:22px;display:flex;flex-direction:column;gap:5px;color:#55524B;">
+                <sc-for list="{{ t.pts }}" as="p" hint-placeholder-count="3"><li>{{ p.t }}</li></sc-for>
+              </ul>
+              <button onClick="{{ go.afspraak }}" style="background:#2E5E4E;color:#fff;border:none;border-radius:999px;padding:10px 20px;font-size:15px;font-weight:600;cursor:pointer;min-height:44px;" style-hover="background:#24493D;">Afspraak maken</button>
+            </div>
+          </sc-for>
+        </div>
+        <section style="margin-top:48px;">
+          <h2 style="margin:0 0 20px;font-size:21px;color:#1F3D32;">Goed om te weten</h2>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px;max-width:900px;">
+            <sc-for list="{{ cosWeten }}" as="w" hint-placeholder-count="3">
+              <div style="background:#EAF1ED;border-radius:16px;padding:24px;">
+                <p style="margin:0 0 6px;font-family:'Outfit',sans-serif;font-size:18px;font-weight:700;color:#1F3D32;">{{ w.t }}</p>
+                <p style="margin:0;color:#3D4A43;font-size:17px;">{{ w.d }}</p>
+              </div>
+            </sc-for>
+          </div>
+        </section>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isMed }}" hint-placeholder-val="{{ false }}">
+      <div data-screen-label="Medische pedicure" style="max-width:1160px;margin:0 auto;padding:64px 24px;">
+        <p style="margin:0 0 10px;color:#2E5E4E;letter-spacing:.18em;text-transform:uppercase;font-size:12px;font-weight:700;">Medische voetzorg</p>
+        <h1 style="font-size:clamp(26px,3.6vw,38px);margin:0 0 14px;color:#1F3D32;">Medische pedicure</h1>
+        <p style="max-width:34em;color:#55524B;margin:0 0 40px;font-size:19px;">Medische voetzorg is er voor voeten die extra aandacht nodig hebben: bij diabetes, reuma, ingegroeide nagels of hardnekkig eelt. U kunt zonder verwijzing een afspraak maken.</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px;margin-bottom:56px;">
+          <sc-for list="{{ medCards }}" as="c" hint-placeholder-count="4">
+            <button onClick="{{ c.on }}" style="text-align:left;background:#fff;border:1px solid #E9E2D3;border-radius:18px;padding:26px;box-shadow:0 1px 2px rgba(31,61,50,.05);cursor:pointer;display:flex;flex-direction:column;gap:8px;font-size:17px;transition:box-shadow .15s ease,transform .15s ease;" style-hover="transform:translateY(-3px);box-shadow:0 12px 28px rgba(31,61,50,.12);">
+              <span style="font-family:'Outfit',sans-serif;font-size:20px;font-weight:700;color:#1F3D32;">{{ c.t }}</span>
+              <span style="color:#55524B;">{{ c.d }}</span>
+              <span style="color:#2E5E4E;font-weight:700;margin-top:4px;">Lees meer →</span>
+            </button>
+          </sc-for>
+        </div>
+        <section style="margin-bottom:56px;">
+          <h2 style="margin:0 0 24px;font-size:21px;color:#1F3D32;">Zo verloopt uw eerste afspraak</h2>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px;">
+            <sc-for list="{{ medStappen }}" as="s" hint-placeholder-count="3">
+              <div style="background:#fff;border:1px solid #E9E2D3;border-radius:16px;padding:26px;">
+                <div style="width:40px;height:40px;border-radius:50%;background:#2E5E4E;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:18px;margin-bottom:12px;">{{ s.n }}</div>
+                <p style="margin:0 0 6px;font-family:'Outfit',sans-serif;font-size:19px;font-weight:700;color:#1F3D32;">{{ s.t }}</p>
+                <p style="margin:0;color:#55524B;font-size:17px;">{{ s.d }}</p>
+              </div>
+            </sc-for>
+          </div>
+        </section>
+        <section style="background:#1F3D32;border-radius:22px;padding:44px 40px;margin-bottom:24px;color:#fff;">
+          <h2 style="margin:0 0 14px;font-size:clamp(20px,2.6vw,26px);color:#fff;">Vergoeding door de zorgverzekeraar</h2>
+          <p style="margin:0 0 22px;max-width:36em;color:rgba(255,255,255,.85);">Bij diabetes of reuma wordt medische voetzorg vaak (deels) vergoed. Dat loopt via een verwijzing van de podotherapeut of huisarts. Onze KRP-registratie (Kwaliteitsregister voor Pedicures) is daarbij een voorwaarde — die hebben we.</p>
+          <h3 style="margin:0 0 14px;font-size:19px;color:#D8C9A3;">Zo checkt u uw polis</h3>
+          <ol style="margin:0 0 22px;padding-left:22px;display:flex;flex-direction:column;gap:8px;max-width:34em;color:rgba(255,255,255,.9);">
+            <li>Kijk in uw polis onder "voetzorg" of "pedicure bij diabetes of reuma".</li>
+            <li>Vraag uw huisarts of podotherapeut om een verwijzing met zorgprofiel.</li>
+            <li>Neem de verwijzing mee naar uw eerste afspraak — wij regelen de rest.</li>
+          </ol>
+          <p style="margin:0;font-weight:600;">Twijfelt u? Bel gerust: <a href="tel:+31742661234" style="color:#D8C9A3;">074 266 1234</a>.</p>
+        </section>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isSub }}" hint-placeholder-val="{{ false }}">
+      <div data-screen-label="Medisch subpagina" style="max-width:1160px;margin:0 auto;padding:56px 24px;">
+        <div style="max-width:780px;">
+        <button onClick="{{ go.medisch }}" style="background:none;border:none;cursor:pointer;color:#2E5E4E;font-size:17px;font-weight:600;padding:8px 0;margin-bottom:8px;" style-hover="text-decoration:underline;">← Medische pedicure</button>
+        <h1 style="font-size:clamp(26px,3.6vw,36px);margin:0 0 26px;color:#1F3D32;">{{ sub.title }}</h1>
+        <h2 style="font-size:23px;margin:0 0 10px;color:#1F3D32;">Herkent u dit?</h2>
+        <p style="margin:0 0 12px;color:#55524B;">{{ sub.klacht }}</p>
+        <ul style="margin:0 0 30px;padding-left:22px;display:flex;flex-direction:column;gap:6px;">
+          <sc-for list="{{ sub.punten }}" as="p" hint-placeholder-count="3"><li>{{ p.t }}</li></sc-for>
+        </ul>
+        <h2 style="font-size:23px;margin:0 0 10px;color:#1F3D32;">De behandeling</h2>
+        <p style="margin:0 0 30px;color:#55524B;">{{ sub.behandeling }}</p>
+        <h2 style="font-size:23px;margin:0 0 10px;color:#1F3D32;">Het resultaat</h2>
+        <p style="margin:0 0 30px;color:#55524B;">{{ sub.resultaat }}</p>
+        <div style="background:#EAF1ED;border-radius:16px;padding:26px;margin-bottom:34px;display:flex;flex-direction:column;gap:8px;">
+          <p style="margin:0;"><strong>Duur:</strong> {{ sub.duur }}</p>
+          <p style="margin:0;"><strong>Prijs:</strong> {{ sub.prijs }}</p>
+          <p style="margin:0;"><strong>Vergoeding:</strong> {{ sub.verg }}</p>
+        </div>
+        <h2 style="font-size:23px;margin:0 0 16px;color:#1F3D32;">Veelgestelde vragen</h2>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:40px;">
+          <sc-for list="{{ sub.faqs }}" as="f" hint-placeholder-count="3">
+            <div style="background:#fff;border:1px solid #E9E2D3;border-radius:14px;">
+              <button onClick="{{ f.on }}" style="width:100%;text-align:left;background:none;border:none;cursor:pointer;padding:17px 20px;font-size:18px;font-weight:600;display:flex;justify-content:space-between;gap:12px;min-height:48px;color:#1F3D32;">{{ f.q }}<span style="color:#2E5E4E;font-size:22px;line-height:1;">{{ f.ch }}</span></button>
+              <sc-if value="{{ f.open }}" hint-placeholder-val="{{ false }}"><p style="margin:0;padding:0 20px 18px;color:#55524B;">{{ f.a }}</p></sc-if>
+            </div>
+          </sc-for>
+        </div>
+        <div style="background:#1F3D32;border-radius:18px;padding:32px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">
+          <p style="margin:0;color:#fff;font-size:17px;font-weight:600;font-family:'Outfit',sans-serif;">Last van uw voeten? Wacht er niet mee.</p>
+          <button onClick="{{ go.afspraak }}" style="background:#FAF6EF;color:#1F3D32;border:none;border-radius:999px;padding:12px 22px;font-size:15px;font-weight:700;cursor:pointer;min-height:48px;" style-hover="background:#fff;">Afspraak maken</button>
+        </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isTar }}" hint-placeholder-val="{{ false }}">
+      <div data-screen-label="Tarieven" style="max-width:1160px;margin:0 auto;padding:64px 24px;">
+        <div style="max-width:780px;">
+        <p style="margin:0 0 10px;color:#2E5E4E;letter-spacing:.18em;text-transform:uppercase;font-size:12px;font-weight:700;">Duidelijk vooraf</p>
+        <h1 style="font-size:clamp(26px,3.6vw,38px);margin:0 0 36px;color:#1F3D32;">Tarieven</h1>
+        <div style="background:#fff;border:1px solid #E9E2D3;border-radius:18px;margin-bottom:24px;overflow:hidden;">
+          <h2 style="margin:0;padding:18px 26px;font-size:20px;background:#F2EDE1;border-bottom:1px solid #E9E2D3;color:#1F3D32;">Cosmetisch</h2>
+          <sc-for list="{{ cosRows }}" as="r" hint-placeholder-count="4">
+            <div style="display:grid;grid-template-columns:1fr auto auto;gap:16px;padding:15px 26px;border-bottom:1px solid #F2EDE1;align-items:baseline;">
+              <span>{{ r.b }}</span><span style="color:#8A8375;font-size:16px;">{{ r.d }}</span><span style="font-weight:700;min-width:76px;text-align:right;color:#1F3D32;">{{ r.p }}</span>
+            </div>
+          </sc-for>
+        </div>
+        <div style="background:#fff;border:1px solid #E9E2D3;border-radius:18px;margin-bottom:28px;overflow:hidden;">
+          <h2 style="margin:0;padding:18px 26px;font-size:20px;background:#F2EDE1;border-bottom:1px solid #E9E2D3;color:#1F3D32;">Medisch</h2>
+          <sc-for list="{{ medRows }}" as="r" hint-placeholder-count="4">
+            <div style="display:grid;grid-template-columns:1fr auto auto;gap:16px;padding:15px 26px;border-bottom:1px solid #F2EDE1;align-items:baseline;">
+              <span>{{ r.b }}</span><span style="color:#8A8375;font-size:16px;">{{ r.d }}</span><span style="font-weight:700;min-width:76px;text-align:right;color:#1F3D32;">{{ r.p }}</span>
+            </div>
+          </sc-for>
+        </div>
+        <p style="margin:0 0 8px;color:#55524B;">U kunt pinnen of contant betalen.</p>
+        <p style="margin:0 0 32px;color:#55524B;">Medische voetzorg wordt bij diabetes of reuma vaak vergoed — <button onClick="{{ go.medisch }}" style="background:none;border:none;cursor:pointer;color:#2E5E4E;font-size:18px;padding:0;text-decoration:underline;">lees hoe dat werkt</button>.</p>
+        <button onClick="{{ go.afspraak }}" style="background:#2E5E4E;color:#fff;border:none;border-radius:999px;padding:13px 26px;font-size:16px;font-weight:600;cursor:pointer;min-height:52px;" style-hover="background:#24493D;">Afspraak maken</button>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isOver }}" hint-placeholder-val="{{ false }}">
+      <div data-screen-label="Over ons" style="max-width:1160px;margin:0 auto;padding:64px 24px;">
+        <div style="max-width:880px;">
+        <p style="margin:0 0 10px;color:#2E5E4E;letter-spacing:.18em;text-transform:uppercase;font-size:12px;font-weight:700;">De praktijk</p>
+        <h1 style="font-size:clamp(26px,3.6vw,38px);margin:0 0 28px;color:#1F3D32;">Over Pedicurecentrum Borne</h1>
+        <div style="height:360px;margin-bottom:36px;"><image-slot id="over-praktijk" placeholder="foto: de praktijkruimte" radius="18"></image-slot></div>
+        <div style="max-width:660px;display:flex;flex-direction:column;gap:16px;margin-bottom:44px;">
+          <p style="margin:0;">Voeten dragen u een leven lang, maar krijgen zelden aandacht — tot ze pijn doen. Dat is waarom dit vak zo mooi is: iemand die met pijn binnenkomt, loopt een uur later weer gewoon naar buiten.</p>
+          <p style="margin:0;">De praktijk zit aan de Aanslagweg in Borne, met gratis parkeren voor de deur. Veel cliënten komen uit Borne zelf, maar ook uit Hertme, Zenderen en Bornerbroek weten ze de praktijk te vinden.</p>
+          <p style="margin:0;">De werkwijze is eenvoudig: rustig de tijd nemen, eerst kijken en luisteren, dan behandelen. Geen behandeling zonder uitleg, en bij medische bijzonderheden korte lijnen met podotherapeut en huisarts.</p>
+        </div>
+        <div style="background:#fff;border:1px solid #E9E2D3;border-radius:18px;padding:32px;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:28px;align-items:center;margin-bottom:32px;">
+          <div style="height:260px;"><image-slot id="over-meike" placeholder="foto: Meike" radius="14"></image-slot></div>
+          <div>
+            <h2 style="margin:0 0 8px;font-size:21px;color:#1F3D32;">Meike</h2>
+            <p style="margin:0 0 8px;color:#2E5E4E;font-weight:700;">Medisch pedicure</p>
+            <p style="margin:0;color:#55524B;">Gediplomeerd medisch pedicure, gespecialiseerd in de diabetische en reumatische voet en nagelbeugeltechniek. Geregistreerd in het KRP.</p>
+          </div>
+        </div>
+        <div style="background:#fff;border:1px solid #E9E2D3;border-radius:18px;padding:32px;margin-bottom:32px;">
+          <h2 style="margin:0 0 18px;font-size:19px;color:#1F3D32;">Diploma's en registraties</h2>
+          <div style="display:flex;gap:12px;flex-wrap:wrap;">
+            <span style="border:1px solid #DCD4C2;border-radius:999px;padding:11px 22px;font-weight:600;color:#55524B;">ProVoet</span>
+            <span style="border:1px solid #DCD4C2;border-radius:999px;padding:11px 22px;font-weight:600;color:#55524B;">KRP / ProCERT</span>
+            <span style="border:1px solid #DCD4C2;border-radius:999px;padding:11px 22px;font-weight:600;color:#55524B;">Medisch pedicure</span>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;">
+          <div style="height:200px;"><image-slot id="grid-1" placeholder="foto: behandelstoel" radius="14"></image-slot></div>
+          <div style="height:200px;"><image-slot id="grid-2" placeholder="foto: instrumenten" radius="14"></image-slot></div>
+          <div style="height:200px;"><image-slot id="grid-3" placeholder="foto: wachtruimte" radius="14"></image-slot></div>
+        </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isAfs }}" hint-placeholder-val="{{ false }}">
+      <div data-screen-label="Afspraak maken" style="max-width:1160px;margin:0 auto;padding:64px 24px;">
+        <p style="margin:0 0 10px;color:#2E5E4E;letter-spacing:.18em;text-transform:uppercase;font-size:12px;font-weight:700;">Online of telefonisch</p>
+        <h1 style="font-size:clamp(26px,3.6vw,38px);margin:0 0 36px;color:#1F3D32;">Afspraak maken</h1>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;align-items:start;margin-bottom:24px;">
+          <div style="background:#fff;border:1px solid #E9E2D3;border-radius:18px;padding:32px;box-shadow:0 1px 2px rgba(31,61,50,.05);">
+            <div style="display:flex;gap:8px;margin-bottom:26px;flex-wrap:wrap;">
+              <sc-for list="{{ bkSteps }}" as="s" hint-placeholder-count="3">
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <div style="width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;background:{{ s.bg }};color:{{ s.c }};">{{ s.n }}</div>
+                  <span style="font-size:15px;color:{{ s.tc }};font-weight:600;margin-right:8px;">{{ s.l }}</span>
+                </div>
+              </sc-for>
+            </div>
+            <sc-if value="{{ st0 }}" hint-placeholder-val="{{ true }}">
+              <h2 style="margin:0 0 16px;font-size:19px;color:#1F3D32;">Kies een behandeling</h2>
+              <div style="display:flex;flex-direction:column;gap:10px;">
+                <sc-for list="{{ bkTreats }}" as="t" hint-placeholder-count="4">
+                  <button onClick="{{ t.on }}" style="text-align:left;cursor:pointer;border-radius:14px;padding:15px 18px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:17px;border:2px solid {{ t.bc }};background:{{ t.bg }};min-height:48px;align-items:center;">
+                    <span style="font-weight:600;">{{ t.n }}</span><span style="color:#55524B;">{{ t.m }}</span>
+                  </button>
+                </sc-for>
+              </div>
+            </sc-if>
+            <sc-if value="{{ st1 }}" hint-placeholder-val="{{ false }}">
+              <h2 style="margin:0 0 16px;font-size:19px;color:#1F3D32;">Kies een datum en tijd</h2>
+              <p style="margin:0 0 10px;font-weight:600;">Datum</p>
+              <div style="border:1px solid #E9E2D3;border-radius:14px;padding:16px;margin-bottom:20px;max-width:380px;">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+                  <button onClick="{{ calPrev }}" aria-label="Vorige maand" style="background:none;border:1px solid #E9E2D3;border-radius:999px;width:40px;height:40px;cursor:pointer;font-size:18px;color:#1F3D32;" style-hover="background:#F0EADC;">‹</button>
+                  <span style="font-weight:700;color:#1F3D32;">{{ calLabel }}</span>
+                  <button onClick="{{ calNext }}" aria-label="Volgende maand" style="background:none;border:1px solid #E9E2D3;border-radius:999px;width:40px;height:40px;cursor:pointer;font-size:18px;color:#1F3D32;" style-hover="background:#F0EADC;">›</button>
+                </div>
+                <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:4px;">
+                  <sc-for list="{{ calDows }}" as="w" hint-placeholder-count="7">
+                    <span style="text-align:center;font-size:13px;font-weight:700;color:#8A8375;text-transform:uppercase;letter-spacing:.04em;">{{ w.l }}</span>
+                  </sc-for>
+                </div>
+                <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;">
+                  <sc-for list="{{ calCells }}" as="c" hint-placeholder-count="35">
+                    <button onClick="{{ c.on }}" disabled="{{ c.dis }}" style="border:none;border-radius:10px;min-height:42px;font-size:16px;font-weight:600;background:{{ c.bg }};color:{{ c.c }};cursor:{{ c.cur }};">{{ c.d }}</button>
+                  </sc-for>
+                </div>
+              </div>
+              <p style="margin:0 0 10px;font-weight:600;">Tijd</p>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                <sc-for list="{{ bkTimes }}" as="d" hint-placeholder-count="6">
+                  <button onClick="{{ d.on }}" style="cursor:pointer;border-radius:999px;padding:12px 18px;font-size:16px;font-weight:600;border:2px solid {{ d.bc }};background:{{ d.bg }};min-height:48px;">{{ d.l }}</button>
+                </sc-for>
+              </div>
+            </sc-if>
+            <sc-if value="{{ st2 }}" hint-placeholder-val="{{ false }}">
+              <h2 style="margin:0 0 16px;font-size:19px;color:#1F3D32;">Uw gegevens</h2>
+              <label style="display:block;font-weight:600;margin-bottom:6px;" for="bk-naam">Naam</label>
+              <input id="bk-naam" value="{{ bkNaam }}" onChange="{{ onNaam }}" style="width:100%;box-sizing:border-box;padding:13px 16px;border:1px solid #DCD4C2;border-radius:10px;margin-bottom:16px;background:#fff;">
+              <label style="display:block;font-weight:600;margin-bottom:6px;" for="bk-tel">Telefoonnummer</label>
+              <input id="bk-tel" value="{{ bkTel }}" onChange="{{ onTel }}" type="tel" style="width:100%;box-sizing:border-box;padding:13px 16px;border:1px solid #DCD4C2;border-radius:10px;background:#fff;">
+              <p style="margin:16px 0 0;color:#8A8375;font-size:15px;">Door te boeken gaat u akkoord met onze <button onClick="{{ go.voorwaarden }}" style="background:none;border:none;cursor:pointer;color:#2E5E4E;font-size:15px;padding:0;text-decoration:underline;">algemene voorwaarden</button>.</p>
+            </sc-if>
+            <sc-if value="{{ st3 }}" hint-placeholder-val="{{ false }}">
+              <h2 style="margin:0 0 12px;font-size:19px;color:#1F3D32;">Uw afspraak is aangevraagd</h2>
+              <p style="margin:0 0 12px;color:#55524B;">{{ bkSummary }}</p>
+              <p style="margin:0 0 20px;color:#55524B;">U ontvangt een bevestiging per e-mail, daarin kunt u de afspraak ook verzetten of annuleren.</p>
+              <button onClick="{{ bkReset }}" style="background:none;border:1px solid #DCD4C2;border-radius:999px;padding:12px 22px;font-size:17px;font-weight:600;cursor:pointer;min-height:48px;" style-hover="background:#F0EADC;">Nog een afspraak maken</button>
+            </sc-if>
+            <sc-if value="{{ hasErr }}" hint-placeholder-val="{{ false }}">
+              <p style="margin:16px 0 0;color:#A0492E;font-weight:600;">{{ bkErr }}</p>
+            </sc-if>
+            <sc-if value="{{ bkNav }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;gap:12px;margin-top:26px;">
+                <sc-if value="{{ canBack }}" hint-placeholder-val="{{ false }}">
+                  <button onClick="{{ bkBack }}" style="background:none;border:1px solid #DCD4C2;border-radius:999px;padding:11px 20px;font-size:15px;font-weight:600;cursor:pointer;min-height:48px;" style-hover="background:#F0EADC;">Terug</button>
+                </sc-if>
+                <button onClick="{{ bkNext }}" style="background:#2E5E4E;color:#fff;border:none;border-radius:999px;padding:11px 24px;font-size:15px;font-weight:600;cursor:pointer;min-height:48px;" style-hover="background:#24493D;">{{ bkNextLabel }}</button>
+              </div>
+            </sc-if>
+          </div>
+          <div style="background:#1F3D32;border-radius:18px;padding:32px;color:#fff;">
+            <h2 style="margin:0 0 12px;font-size:19px;color:#fff;">Liever bellen of appen?</h2>
+            <p style="margin:0 0 18px;color:rgba(255,255,255,.8);">Dat kan natuurlijk ook. We nemen op tussen 8:30 en 17:00.</p>
+            <a href="tel:+31742661234" style="display:block;font-family:'Outfit',sans-serif;font-size:30px;font-weight:700;text-decoration:none;margin-bottom:22px;color:#D8C9A3;">074 266 1234</a>
+            <a href="https://wa.me/31742661234" style="display:inline-flex;align-items:center;gap:10px;background:#FAF6EF;color:#1F3D32;border-radius:999px;padding:12px 22px;font-size:15px;font-weight:700;text-decoration:none;min-height:48px;box-sizing:border-box;" style-hover="background:#fff;color:#1F3D32;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-8.5 8.4 8.6 8.6 0 0 1-3.9-.9L3 21l2-5.4a8.3 8.3 0 0 1-1-4A8.4 8.4 0 0 1 12.5 3 8.4 8.4 0 0 1 21 11.5z"></path></svg>
+              Stuur een WhatsApp
+            </a>
+          </div>
+        </div>
+        <p style="margin:0;color:#55524B;">Verhinderd? Zeg uiterlijk 24 uur van tevoren af, dan brengen we niets in rekening.</p>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isCon }}" hint-placeholder-val="{{ false }}">
+      <div data-screen-label="Contact" style="max-width:1160px;margin:0 auto;padding:64px 24px;">
+        <p style="margin:0 0 10px;color:#2E5E4E;letter-spacing:.18em;text-transform:uppercase;font-size:12px;font-weight:700;">We horen graag van u</p>
+        <h1 style="font-size:clamp(26px,3.6vw,38px);margin:0 0 36px;color:#1F3D32;">Contact</h1>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;align-items:start;">
+          <div style="display:flex;flex-direction:column;gap:24px;">
+            <div style="background:#fff;border:1px solid #E9E2D3;border-radius:18px;padding:32px;">
+              <h2 style="margin:0 0 8px;font-size:19px;color:#1F3D32;">Bezoekadres</h2>
+              <p style="margin:0 0 4px;">Aanslagweg 16C, Borne</p>
+              <p style="margin:0 0 18px;"><a href="tel:+31742661234">074 266 1234</a></p>
+              <h3 style="margin:0 0 10px;font-size:18px;color:#1F3D32;">Openingstijden</h3>
+              <div style="display:flex;flex-direction:column;gap:4px;margin-bottom:18px;">
+                <sc-for list="{{ hours }}" as="h" hint-placeholder-count="7">
+                  <div style="display:flex;justify-content:space-between;gap:16px;max-width:320px;"><span>{{ h.d }}</span><span style="color:#55524B;">{{ h.t }}</span></div>
+                </sc-for>
+              </div>
+              <p style="margin:0;color:#55524B;">Gratis parkeren voor de deur. De praktijk is op de begane grond en toegankelijk met rollator of rolstoel.</p>
+            </div>
+            <div>
+              <div style="height:220px;"><image-slot id="contact-kaart" placeholder="statische kaart: Aanslagweg 16C, Borne" radius="16"></image-slot></div>
+              <a href="https://www.google.com/maps/search/Aanslagweg+16C+Borne" target="_blank" rel="noopener" style="display:inline-block;margin-top:10px;font-size:15px;font-weight:600;">Route via Google Maps →</a>
+            </div>
+            <div style="height:200px;"><image-slot id="contact-ingang" placeholder="foto: de ingang van de praktijk" radius="16"></image-slot></div>
+          </div>
+          <div style="background:#fff;border:1px solid #E9E2D3;border-radius:18px;padding:32px;">
+            <h2 style="margin:0 0 16px;font-size:19px;color:#1F3D32;">Stuur een bericht</h2>
+            <sc-if value="{{ conSent }}" hint-placeholder-val="{{ false }}">
+              <div style="background:#EAF1ED;border-radius:14px;padding:22px;">
+                <p style="margin:0;font-weight:700;color:#1F3D32;">Dank voor uw bericht.</p>
+                <p style="margin:8px 0 0;color:#3D4A43;">We nemen binnen één werkdag contact met u op.</p>
+              </div>
+            </sc-if>
+            <sc-if value="{{ conNotSent }}" hint-placeholder-val="{{ true }}">
+              <form onSubmit="{{ conSubmit }}" style="display:flex;flex-direction:column;gap:16px;">
+                <div>
+                  <label style="display:block;font-weight:600;margin-bottom:6px;" for="con-naam">Naam</label>
+                  <input id="con-naam" required="required" style="width:100%;box-sizing:border-box;padding:13px 16px;border:1px solid #DCD4C2;border-radius:10px;">
+                </div>
+                <div>
+                  <label style="display:block;font-weight:600;margin-bottom:6px;" for="con-tel">Telefoon of e-mail</label>
+                  <input id="con-tel" required="required" style="width:100%;box-sizing:border-box;padding:13px 16px;border:1px solid #DCD4C2;border-radius:10px;">
+                </div>
+                <div>
+                  <label style="display:block;font-weight:600;margin-bottom:6px;" for="con-msg">Bericht</label>
+                  <textarea id="con-msg" required="required" rows="5" style="width:100%;box-sizing:border-box;padding:13px 16px;border:1px solid #DCD4C2;border-radius:10px;resize:vertical;"></textarea>
+                </div>
+                <button type="submit" style="align-self:flex-start;background:#2E5E4E;color:#fff;border:none;border-radius:999px;padding:12px 24px;font-size:15px;font-weight:600;cursor:pointer;min-height:50px;" style-hover="background:#24493D;">Versturen</button>
+                <p style="margin:0;color:#8A8375;font-size:15px;">Wij gebruiken uw gegevens alleen om te reageren — zie onze <button onClick="{{ go.privacy }}" style="background:none;border:none;cursor:pointer;color:#2E5E4E;font-size:15px;padding:0;text-decoration:underline;">privacyverklaring</button>.</p>
+              </form>
+            </sc-if>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isShop }}" hint-placeholder-val="{{ false }}">
+      <div data-screen-label="Webshop" style="max-width:1160px;margin:0 auto;padding:64px 24px;">
+        <p style="margin:0 0 10px;color:#2E5E4E;letter-spacing:.18em;text-transform:uppercase;font-size:12px;font-weight:700;">Afhalen in de praktijk</p>
+        <h1 style="font-size:clamp(26px,3.6vw,38px);margin:0 0 14px;color:#1F3D32;">Webshop</h1>
+        <p style="max-width:34em;color:#55524B;margin:0 0 40px;font-size:19px;">Een kleine selectie producten die we zelf gebruiken en aanraden. U bestelt online, haalt af in de praktijk en betaalt daar — pin of contant.</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;align-items:start;">
+          <div style="display:flex;flex-direction:column;gap:20px;">
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:20px;">
+              <sc-for list="{{ products }}" as="p" hint-placeholder-count="4">
+                <div style="background:#fff;border:1px solid #E9E2D3;border-radius:18px;overflow:hidden;display:flex;flex-direction:column;">
+                  <div style="height:150px;"><image-slot id="{{ p.img }}" shape="rect" placeholder="{{ p.ph }}"></image-slot></div>
+                  <div style="padding:20px;display:flex;flex-direction:column;gap:8px;flex:1;">
+                    <span style="font-family:'Outfit',sans-serif;font-size:19px;font-weight:700;color:#1F3D32;">{{ p.n }}</span>
+                    <span style="color:#55524B;font-size:16px;flex:1;">{{ p.d }}</span>
+                    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:6px;">
+                      <span style="font-weight:700;color:#1F3D32;">{{ p.prF }}</span>
+                      <button onClick="{{ p.on }}" style="background:#2E5E4E;color:#fff;border:none;border-radius:999px;padding:10px 18px;font-size:16px;font-weight:600;cursor:pointer;min-height:44px;" style-hover="background:#24493D;">In winkelmand</button>
+                    </div>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+            <div style="background:#1F3D32;border-radius:18px;padding:28px;color:#fff;">
+              <h2 style="margin:0 0 8px;font-size:19px;color:#fff;">Cadeaukaart</h2>
+              <p style="margin:0 0 16px;color:rgba(255,255,255,.8);max-width:32em;">Geef een verzorgd moment cadeau. Kies zelf het bedrag, vanaf € 25,00. In te leveren bij elke behandeling.</p>
+              <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;">
+                <label for="gift-amt" style="font-weight:600;">Bedrag €</label>
+                <input id="gift-amt" type="number" min="25" step="5" value="{{ giftAmt }}" onChange="{{ onGiftAmt }}" style="width:110px;box-sizing:border-box;padding:11px 14px;border:1px solid rgba(255,255,255,.4);border-radius:10px;background:#fff;color:#1F3D32;font-weight:700;">
+                <button onClick="{{ giftAdd }}" style="background:#FAF6EF;color:#1F3D32;border:none;border-radius:999px;padding:12px 22px;font-size:16px;font-weight:700;cursor:pointer;min-height:46px;" style-hover="background:#fff;">In winkelmand</button>
+              </div>
+            </div>
+          </div>
+          <div style="background:#fff;border:1px solid #E9E2D3;border-radius:18px;padding:28px;">
+            <h2 style="margin:0 0 16px;font-size:19px;color:#1F3D32;">Winkelmand ({{ cartCount }})</h2>
+            <sc-if value="{{ shop0 }}" hint-placeholder-val="{{ true }}">
+              <sc-if value="{{ hasCart }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px;">
+                  <sc-for list="{{ cartRows }}" as="r" hint-placeholder-count="2">
+                    <div style="display:flex;align-items:center;gap:10px;border-bottom:1px solid #F2EDE1;padding-bottom:10px;flex-wrap:wrap;">
+                      <div style="display:flex;align-items:center;gap:4px;">
+                        <button onClick="{{ r.onMin }}" aria-label="Minder" style="background:none;border:1px solid #DCD4C2;border-radius:999px;width:34px;height:34px;cursor:pointer;font-size:17px;font-weight:700;color:#1F3D32;" style-hover="background:#F0EADC;">−</button>
+                        <span style="min-width:26px;text-align:center;font-weight:700;color:#1F3D32;">{{ r.q }}</span>
+                        <button onClick="{{ r.onPlus }}" aria-label="Meer" style="background:none;border:1px solid #DCD4C2;border-radius:999px;width:34px;height:34px;cursor:pointer;font-size:17px;font-weight:700;color:#1F3D32;" style-hover="background:#F0EADC;">+</button>
+                      </div>
+                      <span style="flex:1;">{{ r.n }}</span>
+                      <span style="font-weight:700;color:#1F3D32;">{{ r.tot }}</span>
+                      <button onClick="{{ r.onDel }}" aria-label="Verwijderen" style="background:none;border:none;cursor:pointer;color:#A0492E;font-size:19px;padding:6px;min-width:34px;">✕</button>
+                    </div>
+                  </sc-for>
+                </div>
+                <div style="display:flex;justify-content:space-between;font-weight:700;font-size:19px;color:#1F3D32;margin-bottom:20px;"><span>Totaal</span><span>{{ cartTotal }}</span></div>
+              </sc-if>
+              <p style="margin:0 0 16px;color:#55524B;font-size:16px;">U rekent af bij het afhalen in de praktijk — pin of contant.</p>
+              <button onClick="{{ shopNext }}" style="width:100%;background:#2E5E4E;color:#fff;border:none;border-radius:999px;padding:14px;font-size:17px;font-weight:600;cursor:pointer;min-height:50px;" style-hover="background:#24493D;">{{ shopNextLabel }}</button>
+            </sc-if>
+            <sc-if value="{{ shop1 }}" hint-placeholder-val="{{ false }}">
+              <p style="margin:0 0 16px;color:#55524B;">Bijna klaar. We leggen uw bestelling klaar en laten weten wanneer u deze kunt afhalen.</p>
+              <label style="display:block;font-weight:600;margin-bottom:6px;" for="shop-naam">Naam</label>
+              <input id="shop-naam" value="{{ shopNaam }}" onChange="{{ onShopNaam }}" style="width:100%;box-sizing:border-box;padding:13px 16px;border:1px solid #DCD4C2;border-radius:10px;margin-bottom:16px;">
+              <label style="display:block;font-weight:600;margin-bottom:6px;" for="shop-tel">Telefoonnummer</label>
+              <input id="shop-tel" type="tel" value="{{ shopTel }}" onChange="{{ onShopTel }}" style="width:100%;box-sizing:border-box;padding:13px 16px;border:1px solid #DCD4C2;border-radius:10px;margin-bottom:16px;">
+              <label style="display:block;font-weight:600;margin-bottom:6px;" for="shop-mail">E-mailadres</label>
+              <input id="shop-mail" type="email" value="{{ shopMail }}" onChange="{{ onShopMail }}" style="width:100%;box-sizing:border-box;padding:13px 16px;border:1px solid #DCD4C2;border-radius:10px;margin-bottom:20px;">
+              <p style="margin:0 0 10px;font-weight:600;">Afhaaldag <span style="color:#8A8375;font-weight:400;font-size:15px;">(minimaal 24 uur vooruit)</span></p>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;">
+                <sc-for list="{{ shopDates }}" as="d" hint-placeholder-count="5">
+                  <button onClick="{{ d.on }}" style="cursor:pointer;border-radius:999px;padding:11px 16px;font-size:15px;font-weight:600;border:2px solid {{ d.bc }};background:{{ d.bg }};min-height:44px;">{{ d.l }}</button>
+                </sc-for>
+              </div>
+              <p style="margin:0 0 10px;font-weight:600;">Afhaaltijd</p>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;">
+                <sc-for list="{{ shopTimes }}" as="d" hint-placeholder-count="3">
+                  <button onClick="{{ d.on }}" style="cursor:pointer;border-radius:999px;padding:11px 18px;font-size:15px;font-weight:600;border:2px solid {{ d.bc }};background:{{ d.bg }};min-height:44px;">{{ d.l }}</button>
+                </sc-for>
+              </div>
+              <div style="display:flex;gap:10px;">
+                <button onClick="{{ shopBack }}" style="background:none;border:1px solid #DCD4C2;border-radius:999px;padding:12px 20px;font-size:16px;font-weight:600;cursor:pointer;min-height:48px;" style-hover="background:#F0EADC;">Terug</button>
+                <button onClick="{{ shopNext }}" style="flex:1;background:#2E5E4E;color:#fff;border:none;border-radius:999px;padding:12px;font-size:16px;font-weight:600;cursor:pointer;min-height:48px;" style-hover="background:#24493D;">{{ shopNextLabel }}</button>
+              </div>
+            </sc-if>
+            <sc-if value="{{ shop2 }}" hint-placeholder-val="{{ false }}">
+              <div style="background:#EAF1ED;border-radius:14px;padding:22px;margin-bottom:16px;">
+                <p style="margin:0 0 8px;font-weight:700;color:#1F3D32;">Dank voor uw bestelling.</p>
+                <p style="margin:0;color:#3D4A43;">Uw bestelling ligt klaar op {{ shopMoment }} aan de Aanslagweg 16C. U betaalt bij het afhalen ({{ cartTotal }}) — pin of contant. U ontvangt een bevestiging per e-mail.</p>
+              </div>
+              <button onClick="{{ shopReset }}" style="background:none;border:1px solid #DCD4C2;border-radius:999px;padding:12px 22px;font-size:16px;font-weight:600;cursor:pointer;min-height:48px;" style-hover="background:#F0EADC;">Verder winkelen</button>
+            </sc-if>
+            <sc-if value="{{ hasShopErr }}" hint-placeholder-val="{{ false }}">
+              <p style="margin:16px 0 0;color:#A0492E;font-weight:600;">{{ shopErr }}</p>
+            </sc-if>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isPriv }}" hint-placeholder-val="{{ false }}">
+      <div data-screen-label="Privacyverklaring" style="max-width:1160px;margin:0 auto;padding:64px 24px;">
+        <div style="max-width:680px;display:flex;flex-direction:column;gap:8px;">
+          <h1 style="font-size:clamp(26px,3.6vw,38px);margin:0 0 6px;color:#1F3D32;">Privacyverklaring</h1>
+          <p style="margin:0 0 24px;color:#8A8375;font-size:15px;">Laatst gewijzigd: 10 augustus 2026</p>
+          <h2 style="font-size:19px;color:#1F3D32;margin:12px 0 4px;">Wie wij zijn</h2>
+          <p style="margin:0;color:#55524B;">Pedicurecentrum Borne, Aanslagweg 16C in Borne. KvK 87654321. Telefoon 074 266 1234, e-mail info@pedicurecentrumborne.nl.</p>
+          <h2 style="font-size:19px;color:#1F3D32;margin:20px 0 4px;">Welke gegevens wij verwerken en waarom</h2>
+          <p style="margin:0 0 8px;color:#55524B;"><strong>Afspraakgegevens</strong> — via het online boekingssysteem en telefoon verwerken wij uw naam, telefoonnummer, e-mailadres en de gekozen behandeling. Dat is nodig om de afspraak uit te voeren.</p>
+          <p style="margin:0 0 8px;color:#55524B;"><strong>Contactformulier</strong> — uw naam en contactgegevens gebruiken wij alleen om te reageren op uw bericht.</p>
+          <p style="margin:0;color:#55524B;"><strong>Behandelgegevens</strong> — in het klantdossier leggen wij gegevens over uw voetgezondheid vast, alleen in onze beveiligde salonsoftware. Dit is nodig voor verantwoorde (medische) voetzorg.</p>
+          <h2 style="font-size:19px;color:#1F3D32;margin:20px 0 4px;">Met wie wij gegevens delen</h2>
+          <p style="margin:0;color:#55524B;">Ons boekings- en dossiersysteem (Salonized) verwerkt gegevens namens ons als verwerker; daarvoor is een verwerkersovereenkomst gesloten. Wij verkopen uw gegevens nooit aan derden.</p>
+          <h2 style="font-size:19px;color:#1F3D32;margin:20px 0 4px;">Hoelang wij bewaren</h2>
+          <p style="margin:0;color:#55524B;">Afspraak- en dossiergegevens bewaren wij zolang u cliënt bent en daarna volgens de wettelijke (fiscale) bewaartermijnen.</p>
+          <h2 style="font-size:19px;color:#1F3D32;margin:20px 0 4px;">Uw rechten</h2>
+          <p style="margin:0;color:#55524B;">U heeft recht op inzage, correctie, verwijdering en bezwaar. Neem daarvoor contact met ons op. Een klacht indienen kan bij de Autoriteit Persoonsgegevens.</p>
+          <h2 style="font-size:19px;color:#1F3D32;margin:20px 0 4px;">Cookies</h2>
+          <p style="margin:0;color:#55524B;">Deze website gebruikt alleen functionele cookies en cookieloze bezoekersstatistieken. Wij plaatsen geen volgcookies en tonen daarom geen cookiemelding.</p>
+          <h2 style="font-size:19px;color:#1F3D32;margin:20px 0 4px;">Geautomatiseerde besluitvorming</h2>
+          <p style="margin:0;color:#55524B;">Wij nemen geen besluiten op basis van geautomatiseerde verwerking.</p>
+          <!-- Developer-noot: indien later marketing-pixels of embeds (bijv. YouTube, live Google Maps) worden toegevoegd, is alsnog een cookiebanner met vooraf-toestemming verplicht. -->
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isVw }}" hint-placeholder-val="{{ false }}">
+      <div data-screen-label="Algemene voorwaarden" style="max-width:1160px;margin:0 auto;padding:64px 24px;">
+        <div style="max-width:680px;display:flex;flex-direction:column;gap:8px;">
+          <h1 style="font-size:clamp(26px,3.6vw,38px);margin:0 0 24px;color:#1F3D32;">Algemene voorwaarden</h1>
+          <h2 style="font-size:19px;color:#1F3D32;margin:12px 0 4px;">1. Toepasselijkheid</h2>
+          <p style="margin:0;color:#55524B;">Deze voorwaarden gelden voor alle behandelingen en boekingen bij Pedicurecentrum Borne.</p>
+          <h2 style="font-size:19px;color:#1F3D32;margin:20px 0 4px;">2. Afspraken en annulering</h2>
+          <p style="margin:0;color:#55524B;">Afzeggen kan kosteloos tot 24 uur van tevoren. Daarna, of bij niet verschijnen, wordt de gereserveerde tijd in rekening gebracht.</p>
+          <h2 style="font-size:19px;color:#1F3D32;margin:20px 0 4px;">3. Betaling</h2>
+          <p style="margin:0;color:#55524B;">Alle prijzen zijn inclusief btw. Betaling gebeurt direct na de behandeling, per pin of contant.</p>
+          <h2 style="font-size:19px;color:#1F3D32;margin:20px 0 4px;">4. Uw gezondheidsinformatie</h2>
+          <p style="margin:0;color:#55524B;">U informeert de pedicure juist en volledig over uw gezondheid (onder andere diabetes, reuma en medicijngebruik). De praktijk is niet aansprakelijk voor gevolgen van onjuiste of onvolledige informatie.</p>
+          <h2 style="font-size:19px;color:#1F3D32;margin:20px 0 4px;">5. Nazorg</h2>
+          <p style="margin:0;color:#55524B;">Heeft u binnen 7 dagen na de behandeling klachten? Neem contact op — u kunt kosteloos terugkomen voor een herbeoordeling.</p>
+          <h2 style="font-size:19px;color:#1F3D32;margin:20px 0 4px;">6. Privacy</h2>
+          <p style="margin:0;color:#55524B;">Wij gaan zorgvuldig om met uw gegevens. Zie onze <button onClick="{{ go.privacy }}" style="background:none;border:none;cursor:pointer;color:#2E5E4E;font-size:16px;padding:0;text-decoration:underline;">privacyverklaring</button>.</p>
+          <h2 style="font-size:19px;color:#1F3D32;margin:20px 0 4px;">7. Aansprakelijkheid</h2>
+          <p style="margin:0;color:#55524B;">Onze aansprakelijkheid is beperkt tot het bedrag van de behandeling. De praktijk is niet aansprakelijk voor verlies van eigendommen.</p>
+          <h2 style="font-size:19px;color:#1F3D32;margin:20px 0 4px;">8. Klachten</h2>
+          <p style="margin:0;color:#55524B;">Meld een klacht eerst bij de praktijk; we zoeken samen naar een oplossing. Wij zijn aangesloten bij ProVoet.</p>
+          <h2 style="font-size:19px;color:#1F3D32;margin:20px 0 4px;">9. Toepasselijk recht</h2>
+          <p style="margin:0;color:#55524B;">Op alle behandelingen en boekingen is Nederlands recht van toepassing.</p>
+        </div>
+      </div>
+    </sc-if>
+
+  </main>
+  <footer style="background:#182F27;margin-top:48px;">
+    <div style="max-width:1160px;margin:0 auto;padding:56px 24px 40px;display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:36px;color:#fff;">
+      <div>
+        <p style="margin:0 0 10px;font-family:'Outfit',sans-serif;font-weight:700;font-size:20px;">Pedicurecentrum <span style="color:#D8C9A3;">Borne</span></p>
+        <p style="margin:0 0 4px;color:rgba(255,255,255,.85);">Aanslagweg 16C, Borne</p>
+        <p style="margin:0 0 12px;"><a href="tel:+31742661234" style="color:#D8C9A3;">074 266 1234</a></p>
+        <p style="margin:0;color:rgba(255,255,255,.6);font-size:16px;">ma t/m vr 8:30 – 17:00<br>do tot 20:00 · za op afspraak</p>
+      </div>
+      <div style="height:170px;"><image-slot id="footer-kaart" placeholder="mini-kaart" radius="14"></image-slot></div>
+      <div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;">
+          <span style="border:1px solid rgba(255,255,255,.3);border-radius:999px;padding:8px 16px;font-weight:600;color:rgba(255,255,255,.85);font-size:15px;">ProVoet</span>
+          <span style="border:1px solid rgba(255,255,255,.3);border-radius:999px;padding:8px 16px;font-weight:600;color:rgba(255,255,255,.85);font-size:15px;">KRP</span>
+        </div>
+        <p style="margin:0;font-size:16px;"><button onClick="{{ go.privacy }}" style="background:none;border:none;cursor:pointer;padding:0;font-size:16px;color:rgba(255,255,255,.75);text-decoration:underline;">Privacyverklaring</button> · <button onClick="{{ go.voorwaarden }}" style="background:none;border:none;cursor:pointer;padding:0;font-size:16px;color:rgba(255,255,255,.75);text-decoration:underline;">Algemene voorwaarden</button><br><span style="color:rgba(255,255,255,.45);">KvK 87654321</span></p>
+      </div>
+    </div>
+  </footer>
+  <sc-if value="{{ showSticky }}" hint-placeholder-val="{{ false }}">
+    <div style="position:sticky;bottom:0;z-index:40;background:#FFFDF8;border-top:1px solid #E9E2D3;display:flex;">
+      <a href="tel:+31742661234" style="flex:1;display:flex;align-items:center;justify-content:center;gap:8px;min-height:58px;text-decoration:none;font-weight:600;font-size:16px;border-right:1px solid #E9E2D3;">Bellen</a>
+      <a href="https://wa.me/31742661234" style="flex:1;display:flex;align-items:center;justify-content:center;gap:8px;min-height:58px;text-decoration:none;font-weight:600;font-size:16px;border-right:1px solid #E9E2D3;">WhatsApp</a>
+      <button onClick="{{ go.afspraak }}" style="flex:1.2;background:#2E5E4E;color:#fff;border:none;cursor:pointer;font-size:16px;font-weight:600;min-height:58px;">Afspraak maken</button>
+    </div>
+  </sc-if>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:900},&quot;weergave&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;auto&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;mobiel&quot;,&quot;desktop&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Weergave&quot;},&quot;startPagina&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;home&quot;,&quot;options&quot;:[&quot;home&quot;,&quot;cosmetisch&quot;,&quot;medisch&quot;,&quot;sub-nagels&quot;,&quot;sub-diabetisch&quot;,&quot;sub-reuma&quot;,&quot;sub-eelt&quot;,&quot;tarieven&quot;,&quot;over&quot;,&quot;afspraak&quot;,&quot;contact&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Weergave&quot;},&quot;stickyBalk&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Weergave&quot;}}">
+class Component extends DCLogic {
+  state = {page:'home', menuOpen:false, w: typeof window!=='undefined'?window.innerWidth:1200, bkStep:0, bkT:'', bkD:'', bkTi:'', bkNaam:'', bkTel:'', bkErr:'', conSent:false, faqOpen:-1, cart:[], shopStep:0, shopNaam:'', shopTel:'', shopMail:'', shopDate:'', shopTime:'', shopErr:'', giftAmt:'25'};
+  componentDidMount(){
+    this._r=()=>this.setState({w:window.innerWidth});
+    window.addEventListener('resize',this._r);
+    this._s=()=>{const sc=window.scrollY>12;if(sc!==this.state.scrolled)this.setState({scrolled:sc});};
+    window.addEventListener('scroll',this._s,{passive:true});
+    const sp=this.props.startPagina; if(sp&&sp!=='home') this.setState({page:sp});
+  }
+  componentWillUnmount(){ window.removeEventListener('resize',this._r); window.removeEventListener('scroll',this._s); }
+  nav(p){ this.setState({page:p,menuOpen:false,ddOpen:false,faqOpen:-1,bkErr:''}); window.scrollTo(0,0); }
+  renderVals(){
+    const S=this.state, P=this.props, A='#2E5E4E';
+    const wg=P.weergave??'auto';
+    const isMobile = wg==='mobiel'?true : wg==='desktop'?false : S.w<840;
+    const frameW = wg==='mobiel'?'420px':'none';
+    const go={};
+    [['home','home'],['cosmetisch','cosmetisch'],['medisch','medisch'],['tarieven','tarieven'],['over','over'],['contact','contact'],['afspraak','afspraak'],['shop','shop'],['privacy','privacy'],['voorwaarden','voorwaarden'],['nagels','sub-nagels'],['diabetisch','sub-diabetisch'],['reuma','sub-reuma'],['eelt','sub-eelt']].forEach(([k,p])=>{go[k]=()=>this.nav(p);});
+    const overDark=S.page==='home'&&!S.scrolled;
+    const mkItem=([id,label])=>{
+      const act=S.page===id||(id==='medisch'&&S.page.indexOf('sub-')===0);
+      return {label,on:()=>this.nav(id),c:overDark?(act?'#fff':'rgba(255,255,255,.85)'):(act?A:'#2B2B2B'),w:act?700:400};
+    };
+    const menu=[['cosmetisch','Cosmetische pedicure'],['medisch','Medische pedicure'],['tarieven','Tarieven'],['shop','Webshop'],['over','Over'],['contact','Contact']].map(mkItem);
+    const menuRest=[['tarieven','Tarieven'],['shop','Webshop'],['over','Over'],['contact','Contact']].map(mkItem);
+    const ddAct=['cosmetisch','medisch'].indexOf(S.page)>=0||S.page.indexOf('sub-')===0;
+    const ddItems=[
+      ['cosmetisch','Cosmetische pedicure',700,'14px'],
+      ['medisch','Medische pedicure',700,'14px'],
+      ['sub-diabetisch','Diabetische voet',400,'28px'],
+      ['sub-reuma','Reumatische voet',400,'28px'],
+      ['sub-nagels','Ingegroeide nagels & nagelbeugel',400,'28px'],
+      ['sub-eelt','Likdoorns, eelt & kloven',400,'28px']
+    ].map(([id,label,w,pl])=>({label,w,pl,on:()=>this.nav(id)}));
+    const usps=[
+      {g:'✓',t:'Gediplomeerd medisch pedicure'},
+      {g:'KRP',t:'KRP-geregistreerd'},
+      {g:'1:1',t:'Persoonlijke aandacht'},
+      {g:'P',t:'Gratis parkeren voor de deur'}
+    ];
+    const reviews=[
+      {q:'Eindelijk van mijn ingegroeide nagel af. Duidelijke uitleg en geen moment pijn.',n:'Gerda (67)'},
+      {q:'Kom hier elke zes weken voor mijn diabetische voet. Deskundig en altijd op tijd.',n:'Henk (72)'},
+      {q:'Fijne, rustige praktijk. Je voelt je gezien en de voeten zijn top verzorgd.',n:'Sandra (54)'}
+    ];
+    const cosTreats=[
+      {n:'Basisbehandeling',m:'45 min · € 38,00',d:'Nagels knippen en in vorm brengen, eelt en drukplekken verwijderen, huid verzorgen. De complete basis voor gezonde voeten.',
+       pts:['Voetbad en inspectie van huid en nagels','Nagels knippen, frezen en in vorm brengen','Eelt en drukplekken verwijderen','Afsluitend een verzorgende crème']},
+      {n:'Wellnessbehandeling',m:'60 min · € 52,00',d:'De basisbehandeling, aangevuld met een voetmassage en verzorgend voetpakket. Voor wie ook wil ontspannen.',
+       pts:['Alles uit de basisbehandeling','Voetmassage van circa 15 minuten','Verzorgend voetpakket met warme handdoeken']},
+      {n:'Nagels lakken of gelish',m:'+15 tot 30 min · € 12,00 / € 27,50',d:'Als afsluiting van uw behandeling: lakken in een kleur naar keuze, of gelish die weken mooi blijft.',
+       pts:['Alleen te boeken in combinatie met een behandeling','Gelish blijft 4 tot 6 weken mooi','Ruime kleurkeuze in de praktijk']}
+    ].map(t=>Object.assign({},t,{pts:t.pts.map(x=>({t:x}))}));
+    const cosWeten=[
+      {t:'Hygiëne voorop',d:'Alle instrumenten worden na elke cliënt gereinigd en gesteriliseerd.'},
+      {t:'Hoe vaak?',d:'De meeste cliënten komen elke 6 tot 8 weken. We adviseren wat bij uw voeten past.'},
+      {t:'Voorbereiding',d:'U hoeft niets te doen. Kom zoals u bent — de behandeling begint met een voetbad.'}
+    ];
+    const medStappen=[
+      {n:'1',t:'Voetonderzoek',d:'We bekijken huid, nagels en drukplekken en bespreken uw klachten en gezondheid.'},
+      {n:'2',t:'Behandelplan',d:'U hoort wat er aan de hand is, wat we gaan doen en wat het kost. Geen verrassingen.'},
+      {n:'3',t:'Behandeling',d:'Rustig en zorgvuldig, met advies om klachten voor te blijven. Zo nodig stemmen we af met uw podotherapeut.'}
+    ];
+    const medCards=[
+      {t:'Diabetische voet',d:'Veilige voetzorg en controle bij diabetes.',on:go.diabetisch},
+      {t:'Reumatische voet',d:'Behoedzame behandeling bij reumatische klachten.',on:go.reuma},
+      {t:'Ingegroeide nagels & nagelbeugel',d:'Van pijnlijke nagelrand naar een gezonde nagel.',on:go.nagels},
+      {t:'Likdoorns, eelt & kloven',d:'Direct verlichting bij pijnlijke plekken.',on:go.eelt}
+    ];
+    const MED={
+      'sub-nagels':{title:'Ingegroeide nagels & nagelbeugel',
+        klacht:'Een ingegroeide nagel begint vaak klein: een rode, gevoelige nagelrand die steeds meer pijn doet.',
+        punten:['Pijn aan de nagelrand, vooral in schoenen','Rode of gezwollen huid naast de nagel','Een nagel die krom of in de huid groeit','Terugkerende ontstekingen aan dezelfde teen'],
+        behandeling:'Eerst kijken we samen naar de oorzaak: knippen, schoenen of de vorm van de nagel. De ingegroeide rand wordt voorzichtig vrijgelegd en verzorgd. Groeit de nagel steeds opnieuw in, dan plaatsen we een nagelbeugel: een dun beugeltje op de nagel dat de nagelrand langzaam omhoog trekt. Het plaatsen doet geen pijn en u kunt er gewoon mee lopen.',
+        resultaat:'De pijn neemt meestal direct na de eerste behandeling af. Met een nagelbeugel groeit de nagel in enkele maanden weer in een gezonde vorm. U komt tussentijds terug voor controle en het bijstellen van de beugel.',
+        duur:'Eerste behandeling: 45 minuten',prijs:'Behandeling € 47,50 · nagelbeugel plaatsen € 35,00 · controle € 15,00',
+        verg:'Bij een medische indicatie (bijvoorbeeld diabetes) is vergoeding mogelijk via de podotherapeut.',
+        faqs:[
+          {q:'Doet een nagelbeugel pijn?',a:'Nee. Het plaatsen is pijnloos en de meeste mensen voelen juist direct verlichting, omdat de druk van de nagelrand af gaat.'},
+          {q:'Hoe lang draag ik de beugel?',a:'Gemiddeld drie tot zes maanden, afhankelijk van hoe snel de nagel groeit. U komt ongeveer elke zes weken op controle.'},
+          {q:'Kan ik gewoon sporten en douchen?',a:'Ja. De beugel zit vast op de nagel en kan tegen water, sokken en schoenen.'}
+        ]},
+      'sub-diabetisch':{title:'Diabetische voet',
+        klacht:'Bij diabetes verdient uw voet extra aandacht: wondjes genezen langzamer en u voelt drukplekken soms niet.',
+        punten:['Droge huid of kloofjes','Minder gevoel in de voeten','Eelt of drukplekken die u zelf niet goed ziet'],
+        behandeling:'Een medische pedicurebehandeling afgestemd op de diabetische voet: veilige verzorging van nagels en huid, verwijderen van eelt en controle op drukplekken en wondjes. Bijzonderheden koppelen we terug aan uw podotherapeut of huisarts.',
+        resultaat:'Verzorgde voeten, minder kans op wondjes en tijdige signalering van problemen.',
+        duur:'45 minuten',prijs:'€ 47,50',
+        verg:'Met een verwijzing via de podotherapeut wordt de behandeling vaak (deels) vergoed vanuit de basisverzekering.',
+        faqs:[
+          {q:'Heb ik een verwijzing nodig?',a:'Voor vergoeding meestal wel: de podotherapeut stelt een zorgprofiel op. Zonder verwijzing kunt u ook gewoon terecht, dan betaalt u zelf.'},
+          {q:'Hoe vaak moet ik komen?',a:'Meestal elke zes tot acht weken. We stemmen de frequentie af op uw zorgprofiel.'}
+        ]},
+      'sub-reuma':{title:'Reumatische voet',
+        klacht:'Reuma kan de stand van uw voeten en tenen veranderen. Daardoor ontstaan sneller drukplekken, eelt en pijnlijke nagels.',
+        punten:['Pijnlijke of vergroeide tenen','Eelt op drukplekken','Moeite om zelf uw nagels te knippen'],
+        behandeling:'Een rustige, zorgvuldige behandeling waarbij we rekening houden met gevoelige gewrichten en een kwetsbare huid. Nagels worden in de juiste vorm geknipt en eelt wordt behoedzaam verwijderd.',
+        resultaat:'Minder pijn bij het lopen en voeten die goed verzorgd blijven, ook als zelf knippen lastig is.',
+        duur:'45 minuten',prijs:'€ 47,50',
+        verg:'Bij reumatische klachten is vergoeding mogelijk via een verwijzing van uw huisarts of reumatoloog.',
+        faqs:[
+          {q:'Is de behandeling pijnlijk?',a:'Nee. We werken rustig en passen ons aan aan wat uw voeten aankunnen. Geef gerust aan als iets gevoelig is.'},
+          {q:'Kan ik terecht tijdens een opvlamming?',a:'Ja, juist dan. We passen de behandeling aan en overleggen zo nodig met uw behandelend arts.'}
+        ]},
+      'sub-eelt':{title:'Likdoorns, eelt & kloven',
+        klacht:'Eelt, likdoorns en kloven zijn meer dan een schoonheidsprobleem: ze kunnen flink pijn doen bij elke stap.',
+        punten:['Stekende pijn alsof er een steentje in uw schoen zit (likdoorn)','Harde, gele eeltplekken onder de voet','Pijnlijke of diepe kloven in de hiel'],
+        behandeling:'Eelt en likdoorns worden professioneel verwijderd en kloven worden verzorgd en gesloten. We kijken ook naar de oorzaak — vaak druk of schoeisel — zodat de klacht niet direct terugkomt.',
+        resultaat:'Direct verlichting: de meeste mensen lopen na één behandeling weer zonder pijn naar buiten.',
+        duur:'45 minuten',prijs:'€ 47,50 (onderdeel van de medische behandeling)',
+        verg:'Alleen bij een medische indicatie; vraag het gerust na.',
+        faqs:[
+          {q:'Komt een likdoorn terug?',a:'Dat kan, als de druk op die plek blijft. Daarom kijken we ook naar schoenen en drukverdeling en adviseren we hoe u herhaling voorkomt.'},
+          {q:'Mag ik zelf eelt wegsnijden?',a:'Liever niet. Zeker bij diabetes of een kwetsbare huid is dat risicovol. Een eeltvijl voor licht onderhoud kan wel.'}
+        ]}
+    };
+    const rawSub=MED[S.page];
+    const sub=rawSub?Object.assign({},rawSub,{
+      punten:rawSub.punten.map(t=>({t})),
+      faqs:rawSub.faqs.map((f,i)=>({q:f.q,a:f.a,open:S.faqOpen===i,ch:S.faqOpen===i?'–':'+',on:()=>this.setState({faqOpen:S.faqOpen===i?-1:i})}))
+    }):{title:'',klacht:'',behandeling:'',resultaat:'',duur:'',prijs:'',verg:'',punten:[],faqs:[]};
+    const selSt=v=>v?{bc:A,bg:'#EFF5F2'}:{bc:'#E9E2D3',bg:'#fff'};
+    const bkTreats=[
+      {n:'Cosmetische basisbehandeling',m:'45 min · € 38,00'},
+      {n:'Wellnessbehandeling',m:'60 min · € 52,00'},
+      {n:'Medische pedicure',m:'45 min · € 47,50'},
+      {n:'Nagelbeugel (consult)',m:'30 min · € 35,00'}
+    ].map(t=>Object.assign({},t,selSt(S.bkT===t.n),{on:()=>this.setState({bkT:t.n,bkErr:''})}));
+    const dn=['zo','ma','di','wo','do','vr','za'],mn=['januari','februari','maart','april','mei','juni','juli','augustus','september','oktober','november','december'];
+    const now=new Date();
+    const calY=S.calY??now.getFullYear(), calM=S.calM??now.getMonth();
+    const calLabel=mn[calM]+' '+calY;
+    const calDows=['ma','di','wo','do','vr','za','zo'].map(l=>({l}));
+    const first=new Date(calY,calM,1), nDays=new Date(calY,calM+1,0).getDate();
+    const lead=(first.getDay()+6)%7;
+    const tomorrow=new Date(now.getFullYear(),now.getMonth(),now.getDate()+1);
+    const calCells=[];
+    for(let i=0;i<lead;i++)calCells.push({d:'',dis:true,bg:'transparent',c:'transparent',cur:'default',on:()=>{}});
+    for(let day=1;day<=nDays;day++){
+      const dt=new Date(calY,calM,day);
+      const lbl=dn[dt.getDay()]+' '+day+' '+mn[calM].slice(0,3);
+      const dis=dt<tomorrow||dt.getDay()===0;
+      const sel=S.bkD===lbl;
+      calCells.push({d:String(day),dis,cur:dis?'default':'pointer',
+        bg:sel?A:dis?'transparent':'#F5F1E7',
+        c:sel?'#fff':dis?'#C9C0B0':'#1F3D32',
+        on:dis?()=>{}:()=>this.setState({bkD:lbl,bkErr:''})});
+    }
+    const calPrev=()=>{const m=calM-1;this.setState(m<0?{calY:calY-1,calM:11}:{calM:m});};
+    const calNext=()=>{const m=calM+1;this.setState(m>11?{calY:calY+1,calM:0}:{calM:m});};
+    const bkTimes=['09:00','10:15','11:30','13:30','14:45','16:00'].map(l=>Object.assign({l},selSt(S.bkTi===l),{on:()=>this.setState({bkTi:l,bkErr:''})}));
+    const stepLbls=['Behandeling','Datum & tijd','Gegevens'];
+    const bkSteps=stepLbls.map((l,i)=>({l,n:String(i+1),
+      bg:S.bkStep>=i?A:'#EDE8DD',c:S.bkStep>=i?'#fff':'#8A8375',tc:S.bkStep===i?'#2B2B2B':'#8A8375'}));
+    const bkNext=()=>{
+      const st=S.bkStep;
+      if(st===0){ if(!S.bkT) return this.setState({bkErr:'Kies eerst een behandeling.'}); this.setState({bkStep:1,bkErr:''}); }
+      else if(st===1){ if(!S.bkD||!S.bkTi) return this.setState({bkErr:'Kies een datum en een tijd.'}); this.setState({bkStep:2,bkErr:''}); }
+      else if(st===2){ if(!S.bkNaam.trim()||!S.bkTel.trim()) return this.setState({bkErr:'Vul uw naam en telefoonnummer in.'}); this.setState({bkStep:3,bkErr:''}); }
+    };
+    const hours=[
+      {d:'Maandag',t:'8:30 – 17:00'},{d:'Dinsdag',t:'8:30 – 17:00'},{d:'Woensdag',t:'8:30 – 17:00'},
+      {d:'Donderdag',t:'8:30 – 20:00'},{d:'Vrijdag',t:'8:30 – 17:00'},{d:'Zaterdag',t:'Op afspraak'},{d:'Zondag',t:'Gesloten'}
+    ];
+    // webshop
+    const fmt=v=>'€ '+v.toFixed(2).replace('.',',');
+    const addCart=(n,p)=>{
+      const cart=S.cart.slice();
+      const ex=cart.find(i=>i.n===n&&i.p===p);
+      if(ex)ex.qty++; else cart.push({n,p,qty:1});
+      this.setState({cart,shopErr:''});
+    };
+    const products=[
+      {n:'Voetcrème ureum 10%',d:'Voor droge huid en kloofjes. Dagelijks gebruik.',pr:14.95,img:'shop-creme',ph:'foto: voetcrème'},
+      {n:'Nagelriemolie',d:'Verzorgt nagels en nagelriemen.',pr:9.95,img:'shop-olie',ph:'foto: nagelriemolie'},
+      {n:'Eeltvijl',d:'Voor licht onderhoud tussen behandelingen door.',pr:12.50,img:'shop-vijl',ph:'foto: eeltvijl'},
+      {n:'Voetenbadzout',d:'Verzachtend badzout met lavendel.',pr:8.50,img:'shop-zout',ph:'foto: voetenbadzout'}
+    ].map(p=>Object.assign({},p,{prF:fmt(p.pr),imgHome:'home-'+p.img,on:()=>addCart(p.n,p.pr)}));
+    const giftAmt=S.giftAmt;
+    const giftAdd=()=>{
+      const v=parseFloat(String(giftAmt).replace(',','.'));
+      if(!v||v<25) return this.setState({shopErr:'Een cadeaukaart kan vanaf € 25,00.'});
+      addCart('Cadeaukaart '+fmt(v),v);
+    };
+    const cartRows=S.cart.map((i,ix)=>({n:i.n,q:String(i.qty),tot:fmt(i.p*i.qty),
+      onDel:()=>{const cart=S.cart.slice();cart.splice(ix,1);this.setState({cart});},
+      onMin:()=>{const cart=S.cart.map(x=>Object.assign({},x));if(cart[ix].qty>1){cart[ix].qty--;this.setState({cart});}else{cart.splice(ix,1);this.setState({cart});}},
+      onPlus:()=>{const cart=S.cart.map(x=>Object.assign({},x));cart[ix].qty++;this.setState({cart});}}));
+    const cartTotal=fmt(S.cart.reduce((s,i)=>s+i.p*i.qty,0));
+    const cartCount=S.cart.reduce((s,i)=>s+i.qty,0);
+    const shopNext=()=>{
+      if(S.shopStep===0){ if(!S.cart.length) return this.setState({shopErr:'Uw winkelmand is nog leeg.'}); this.setState({shopStep:1,shopErr:''}); }
+      else if(S.shopStep===1){
+        if(!S.shopNaam.trim()||!S.shopTel.trim()||!S.shopMail.trim()) return this.setState({shopErr:'Vul uw naam, telefoonnummer en e-mailadres in.'});
+        if(!S.shopDate||!S.shopTime) return this.setState({shopErr:'Kies een afhaaldag en tijd.'});
+        this.setState({shopStep:2,shopErr:''});
+      }
+    };
+    // afhaalmoment: minimaal 24 uur vooruit
+    const shopDts=[];let sd=new Date(now.getTime()+2*864e5);
+    while(shopDts.length<5){ if(sd.getDay()!==0) shopDts.push(dn[sd.getDay()]+' '+sd.getDate()+' '+mn[sd.getMonth()].slice(0,3)); sd=new Date(sd.getTime()+864e5); }
+    const shopDates=shopDts.map(l=>Object.assign({l},selSt(S.shopDate===l),{on:()=>this.setState({shopDate:l,shopErr:''})}));
+    const shopTimes=['10:00','13:00','16:00'].map(l=>Object.assign({l},selSt(S.shopTime===l),{on:()=>this.setState({shopTime:l,shopErr:''})}));
+    const shopMoment=S.shopDate+' om '+S.shopTime+' uur';
+    const cosRows=[
+      {b:'Basisbehandeling',d:'45 min',p:'€ 38,00'},{b:'Wellnessbehandeling',d:'60 min',p:'€ 52,00'},
+      {b:'Nagels lakken',d:'+15 min',p:'€ 12,00'},{b:'Gelish',d:'+30 min',p:'€ 27,50'}
+    ];
+    const medRows=[
+      {b:'Medische pedicure',d:'45 min',p:'€ 47,50'},{b:'Nagelbeugel plaatsen',d:'30 min',p:'€ 35,00'},
+      {b:'Beugelcontrole',d:'15 min',p:'€ 15,00'},{b:'Voetonderzoek / screening',d:'30 min',p:'€ 25,00'}
+    ];
+    return {
+      isMobile, isDesk:!isMobile, frameW, go, menu, menuRest, ddItems,
+      ddOpen:!!S.ddOpen, toggleDd:()=>this.setState({ddOpen:!S.ddOpen}),
+      ddC:overDark?(ddAct?'#fff':'rgba(255,255,255,.85)'):(ddAct?A:'#2B2B2B'), ddW:ddAct?700:400,
+      hdrBg:overDark?'transparent':'rgba(250,246,239,.94)',
+      hdrBd:overDark?'transparent':'#E9E2D3',
+      hdrLogo:overDark?'#fff':'#1F3D32',
+      hdrAcc:overDark?'#D8C9A3':'#2E5E4E',
+      hdrTel:overDark?'#fff':'#2E5E4E',
+      hdrTelBd:overDark?'rgba(255,255,255,.4)':'#DCD4C2',
+      hdrHov:overDark?'rgba(255,255,255,.12)':'#F0EADC',
+      hdrCtaBg:overDark?'#FAF6EF':'#2E5E4E',
+      hdrCtaC:overDark?'#1F3D32':'#fff',
+      hdrCtaHov:overDark?'#fff':'#24493D',
+      heroMt:isMobile?'-66px':'-68px',
+      usps, reviews, cosTreats, cosWeten, medStappen, medCards, sub,
+      menuOpen:S.menuOpen, toggleMenu:()=>this.setState({menuOpen:!S.menuOpen}),
+      isHome:S.page==='home', isCos:S.page==='cosmetisch', isMed:S.page==='medisch',
+      isSub:!!rawSub, isTar:S.page==='tarieven', isOver:S.page==='over', isAfs:S.page==='afspraak', isCon:S.page==='contact',
+      st0:S.bkStep===0, st1:S.bkStep===1, st2:S.bkStep===2, st3:S.bkStep===3,
+      bkSteps, bkTreats, bkTimes, calLabel, calDows, calCells, calPrev, calNext,
+      bkNaam:S.bkNaam, bkTel:S.bkTel,
+      onNaam:e=>this.setState({bkNaam:e.target.value}), onTel:e=>this.setState({bkTel:e.target.value}),
+      bkNext, bkNextLabel:S.bkStep===2?'Afspraak aanvragen':'Volgende',
+      bkNav:S.bkStep<3, canBack:S.bkStep>0&&S.bkStep<3,
+      bkBack:()=>this.setState({bkStep:Math.max(0,S.bkStep-1),bkErr:''}),
+      bkReset:()=>this.setState({bkStep:0,bkT:'',bkD:'',bkTi:'',bkNaam:'',bkTel:'',bkErr:''}),
+      bkErr:S.bkErr, hasErr:!!S.bkErr,
+      bkSummary:S.bkT+' op '+S.bkD+' om '+S.bkTi+' uur, voor '+S.bkNaam+'.',
+      conSent:S.conSent, conNotSent:!S.conSent,
+      conSubmit:e=>{e.preventDefault();this.setState({conSent:true});},
+      hours, cosRows, medRows,
+      isPriv:S.page==='privacy', isVw:S.page==='voorwaarden',
+      isShop:S.page==='shop', products, cartRows, cartTotal, cartCount:String(cartCount),
+      hasCart:!!S.cart.length, giftAmt, giftAdd,
+      onGiftAmt:e=>this.setState({giftAmt:e.target.value}),
+      shop0:S.shopStep===0, shop1:S.shopStep===1, shop2:S.shopStep===2,
+      shopNaam:S.shopNaam, shopTel:S.shopTel, shopMail:S.shopMail,
+      onShopNaam:e=>this.setState({shopNaam:e.target.value}), onShopTel:e=>this.setState({shopTel:e.target.value}),
+      onShopMail:e=>this.setState({shopMail:e.target.value}),
+      shopDates, shopTimes, shopMoment,
+      shopNext, shopNextLabel:S.shopStep===1?'Bestelling plaatsen':'Bestellen',
+      shopBack:()=>this.setState({shopStep:0,shopErr:''}),
+      shopReset:()=>this.setState({cart:[],shopStep:0,shopNaam:'',shopTel:'',shopMail:'',shopDate:'',shopTime:'',shopErr:''}),
+      shopErr:S.shopErr, hasShopErr:!!S.shopErr,
+      showSticky:isMobile&&(P.stickyBalk??true)
+    };
+  }
+}
+</script>
+</body>
+</html>

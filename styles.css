@@ -1,0 +1,12 @@
+/* ──────────────────────────────────────────────────────────────────────
+   Floot Design System — global entry stylesheet.
+
+   This is the single file consumers should link. It pulls in the canonical
+   design tokens (colors, type, spacing, radii, shadows, motion) defined in
+   colors_and_type.css.
+
+   Surface-specific stylesheets (preview/_card.css, ui_kits/floot/app.css)
+   already @import colors_and_type.css themselves, so they stay in sync
+   whether or not this entry file is used.
+   ────────────────────────────────────────────────────────────────────── */
+@import url('./colors_and_type.css');
